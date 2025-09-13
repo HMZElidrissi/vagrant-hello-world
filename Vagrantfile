@@ -10,7 +10,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "web-server" do |web|
     web.vm.box = "ubuntu/jammy64"
     web.vm.hostname = "web-server"
+    
+    # Network configuration
     web.vm.network "public_network"
+    web.vm.network "private_network", ip: "192.168.56.10"
     
     web.vm.provider "virtualbox" do |vb|
       vb.name = "DevOps-Web-Server"
@@ -18,7 +21,6 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
     
-    # Use external script
     web.vm.provision "shell", path: "scripts/provision-web-ubuntu.sh"
   end
 end
