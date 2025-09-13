@@ -54,11 +54,8 @@ vagrant up
 ## Access Services
 
 ### Website:
-```bash
-# Get web server public IP
-vagrant ssh web-server -c "hostname -I | cut -d' ' -f1"
-# Open browser to that IP
-```
+
+Open your browser and go to `http://192.168.3.113/`
 
 ### Database (from host machine):
 ```bash
