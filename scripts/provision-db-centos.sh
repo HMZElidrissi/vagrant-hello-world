@@ -12,7 +12,15 @@ dnf install -y mysql-server mysql
 systemctl start mysqld
 systemctl enable mysqld
 
-# Basic MySQL setup (no password yet)
+# Start firewall service
+systemctl start firewalld
+systemctl enable firewalld
+
+# add the port rules
+firewall-cmd --permanent --add-port=3306/tcp
+firewall-cmd --reload
+
+# Basic MySQL setup
 mysql -u root << 'EOF'
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
@@ -29,8 +37,21 @@ GRANT ALL PRIVILEGES ON demo_db.* TO 'demo_user'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-echo "=== Database Server Info ==="
+# Execute SQL files
+echo "=== Creating database schema ==="
+mysql -u root demo_db < /vagrant/database/create-table.sql
+
+echo "=== Loading demo data ==="
+mysql -u root demo_db < /vagrant/database/insert-demo-data.sql
+
+# Configure MySQL for external connections
+echo "bind-address = 0.0.0.0" >> /etc/my.cnf.d/mysql-server.cnf
+systemctl restart mysqld
+
+echo "=== Database Info ==="
 echo "MySQL Status: $(systemctl is-active mysqld)"
 echo "Database: demo_db"
-echo "User: demo_user"
+echo "User: demo_user / DemoPass123!"
+echo "Port forwarding: host:3307 -> guest:3306"
+mysql -u demo_user -p'DemoPass123!' demo_db -e "SELECT COUNT(*) as user_count FROM users;" 2>/dev/null
 echo "=== Database Server Provisioning Complete ==="

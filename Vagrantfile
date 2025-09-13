@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
     db.vm.box = "centos/stream9"
     db.vm.hostname = "db-server"
     db.vm.network "private_network", ip: "192.168.56.20"
+    db.vm.network "forwarded_port", guest: 3306, host: 3307
     
     db.vm.provider "virtualbox" do |vb|
       vb.name = "DevOps-DB-Server"
