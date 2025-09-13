@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "web-server" do |web|
     web.vm.box = "ubuntu/jammy64"
     web.vm.hostname = "web-server"
-    web.vm.network "public_network"
+    web.vm.network "public_network", ip: "192.168.3.113"
     web.vm.network "private_network", ip: "192.168.56.10"
     
     # Add synced folder

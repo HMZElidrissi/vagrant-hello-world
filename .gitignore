@@ -1,4 +1,5 @@
 .vagrant/
+bootstrap-theme/
 *.log
 *.box
 .DS_Store
